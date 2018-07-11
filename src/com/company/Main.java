@@ -1,12 +1,23 @@
 package com.company;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Main {
+public class Main extends JFrame {
+
+    public Main(){ //konstruktor
+        super("Milionerzy"); //ustawia tytuł
+        setSize(500,500); //ustawia wielkość okna
+        setDefaultCloseOperation(1); //sprawia, że działa przycisk exit
+        setVisible(true); //pokazuje okno
+    }
+
 
     public static void main(String[] args) {
+        Main main = new Main();
+
         List<Question> questionList = new ArrayList<>();
         questionList.add(new Question("Czy Polska leży w Europie", true));
         questionList.add(new Question("2+2=4?", true));
