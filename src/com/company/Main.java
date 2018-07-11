@@ -2,64 +2,93 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Main extends JFrame {
+//atrybuty *******************************************************
+
+public class Main extends JFrame implements ActionListener {
 
     private JButton buttonYes;
     private JButton buttonNo;
     private JLabel labelQuestion;
 
-    public Main(){ //konstruktor
+
+    //zmienna, która jest typu interfejsowego
+    //co oznacza, że musi do tej zmiennej przekazać klasę
+    //która będzie implementowała intrfejs QuestionGenerator.
+    //Mówi ogólnie o typie, ale nie mówi konkretnie o klasie
+    //podajemy kategorie do której będzie należeć klasa
+    private QuestionGenerator questionGenerator;
+    private int currentQuestion = 0;
+    private int score = 0;
+
+    //koniec atrybutów ********************************************************************
+
+    public void setQuestionGenerator(QuestionGenerator questionGenerator) {
+        this.questionGenerator = questionGenerator;
+        questionList = questionGenerator.generateQuestions();
+    }
+
+    private List<Question> questionList = new ArrayList<>();
+
+    //konstruktor **********************************************************
+    public Main() { //konstruktor
         super("Milionerzy"); //ustawia tytuł
-        setSize(500,500); //ustawia wielkość okna
-        setDefaultCloseOperation(1); //sprawia, że działa przycisk exit
-        setVisible(true); //pokazuje okno
-        buttonYes = new JButton("TAK");
-        buttonNo = new JButton("NIE");
-        labelQuestion = new JLabel("Czy Polska lezy w Europie",0);
+        createDefaultComponents();
+        labelQuestion = new JLabel(questionList.get(0).getContent(), 0);
         add(labelQuestion);
         add(buttonYes);
         add(buttonNo);
-        setLayout(new GridLayout(3,1));
-
+        setLayout(new GridLayout(3, 1));
+        //Listenerem ma być obiek Main, czyli okno
     }
 
+    private void createDefaultComponents() {
+        setSize(500, 500); //ustawia wielkość okna
+        setDefaultCloseOperation(1); //sprawia, że działa przycisk exit
+        setVisible(true); //pokazuje okno
+        setQuestionGenerator(new SimpleQuestionGenerator());
+        buttonYes = new JButton("TAK");
+        buttonNo = new JButton("NIE");
+        buttonYes.addActionListener(this); //wskazuje na obiekt w którym jest (Main)
+        buttonNo.addActionListener(this);
+    }
+    //koniec konstruktora*********************************************************************
 
-    public static void main(String[] args) {
-
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                Main main = new Main();
-            }
-        });
-
-        List<Question> questionList = new ArrayList<>();
-        questionList.add(new Question("Czy Polska leży w Europie", true));
-        questionList.add(new Question("2+2=4?", true));
-        questionList.add(new Question("Is dog a fish?", false));
-        questionList.add(new Question("Is Java OOP language?", true));
-
-        int score = 0;
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Answer yes or no: \n");
-
-        for(Question question: questionList){
-            System.out.println(question.getContent());
-            String answer = scanner.nextLine();
-            if((answer.equals("yes") && question.isCorrect()) || (answer.equals("no") && !question.isCorrect())){
+    @Override //implementacja metody actionPerformed z interfejsu
+    public void actionPerformed(ActionEvent e) {
+        if (currentQuestion < questionList.size()) {
+            JButton clickedButton = (JButton) e.getSource();
+            Question currentQuestion = questionList.get(this.currentQuestion);
+            if (clickedButton == buttonYes
+                    && currentQuestion.isCorrect()) {
                 score++;
-                System.out.println("Correct!\n");
-            } else {
-                System.out.println("Sorry, wrong answer!");
+            }
+            if (clickedButton == buttonNo
+                    && !currentQuestion.isCorrect()) {
+                score++;
             }
         }
-        System.out.println("**********");
-        System.out.println("Your final score is: " + score + "/4");
+            if (currentQuestion + 1 < questionList.size()) {
+                labelQuestion.setText(questionList.get(++currentQuestion).getContent());
+            } else {
+                JOptionPane.showMessageDialog(this, "Koniec quizu, Twój wynik to: " + score + "/4");
+                buttonYes.setEnabled(false);
+                buttonNo.setEnabled(false);
+            }
+        }
 
+        public static void main (String[]args){
+
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    Main main = new Main();
+                }
+            });
+        }
     }
-}

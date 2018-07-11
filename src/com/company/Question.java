@@ -29,7 +29,7 @@ public class Question {
         isCorrect = correct;
     }
 
-    @Override
+    @Override // podpowiedź dla kompilatora
     public String toString() {
         return "Question{" +
                 "content='" + content + '\'' +
