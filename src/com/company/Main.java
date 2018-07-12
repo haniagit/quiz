@@ -4,9 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.io.FileNotFoundException;
 
 //atrybuty *******************************************************
 
@@ -51,7 +54,7 @@ public class Main extends JFrame implements ActionListener {
         setSize(500, 500); //ustawia wielkość okna
         setDefaultCloseOperation(1); //sprawia, że działa przycisk exit
         setVisible(true); //pokazuje okno
-        setQuestionGenerator(new SimpleQuestionGenerator());
+        setQuestionGenerator(new FileGenerator());
         buttonYes = new JButton("TAK");
         buttonNo = new JButton("NIE");
         buttonYes.addActionListener(this); //wskazuje na obiekt w którym jest (Main)
@@ -73,16 +76,16 @@ public class Main extends JFrame implements ActionListener {
                 score++;
             }
         }
-            if (currentQuestion + 1 < questionList.size()) {
-                labelQuestion.setText(questionList.get(++currentQuestion).getContent());
-            } else {
-                JOptionPane.showMessageDialog(this, "Koniec quizu, Twój wynik to: " + score + "/4");
-                buttonYes.setEnabled(false);
-                buttonNo.setEnabled(false);
-            }
+        if (currentQuestion + 1 < questionList.size()) {
+            labelQuestion.setText(questionList.get(++currentQuestion).getContent());
+        } else {
+            JOptionPane.showMessageDialog(this, "Koniec quizu, Twój wynik to: " + score + " punkty.");
+            buttonYes.setEnabled(false);
+            buttonNo.setEnabled(false);
         }
+    }
 
-        public static void main (String[]args){
+    public static void main(String[] args) throws FileNotFoundException {
 
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
@@ -90,5 +93,7 @@ public class Main extends JFrame implements ActionListener {
                     Main main = new Main();
                 }
             });
-        }
+
     }
+}
+
