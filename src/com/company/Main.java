@@ -52,7 +52,7 @@ public class Main extends JFrame implements ActionListener {
 
     private void createDefaultComponents() {
         setSize(500, 500); //ustawia wielkość okna
-        setDefaultCloseOperation(1); //sprawia, że działa przycisk exit
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //sprawia, że działa przycisk exit
         setVisible(true); //pokazuje okno
         setQuestionGenerator(new FileGenerator());
         buttonYes = new JButton("TAK");

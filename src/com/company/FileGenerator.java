@@ -19,7 +19,6 @@ public class FileGenerator implements QuestionGenerator {
         try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
 
             //1. filter line 3
-            //2. convert all content to upper case
             //3. convert it into a List
             list = stream
                     .filter(line -> !line.startsWith("line3"))
@@ -30,24 +29,32 @@ public class FileGenerator implements QuestionGenerator {
         }
 
         for (String line : list) {
-            System.out.println("Linia "+line);
+            System.out.println("Linia " + line);
             int indexQuestionMark = line.indexOf('?');
             String question = line.substring(0, indexQuestionMark + 1);
-            if (line.contains("tak")) {
-                questions.add(new Question(question,true));
-            }
-            if (line.contains("nie")) {
-                questions.add(new Question(question,false));
-            }
 
+            for (AnswerEnum answerEnum : AnswerEnum.values()) {
+                if (line.contains(answerEnum.name())) {
+                    questions.add(new Question(question, answerEnum.isCorrect()));
+                }
+//
+//            if (line.contains("tak")) {
+//                questions.add(new Question(question,true));
+//            }
+//            if (line.contains("nie")) {
+//                questions.add(new Question(question,false));
+//            }
+
+            }
         }
 
-        return questions;
-    }
+            return questions;
+//
+//    public static void main(String[] args) {
+//        FileGenerator fileGenerator = new FileGenerator();
+//        System.out.println(fileGenerator.generateQuestions());
+//    }
 
-    public static void main(String[] args) {
-        FileGenerator fileGenerator = new FileGenerator();
-        System.out.println(fileGenerator.generateQuestions());
-    }
+        }
 
 }
